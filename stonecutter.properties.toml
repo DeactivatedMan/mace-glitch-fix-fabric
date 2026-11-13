@@ -2,7 +2,7 @@
 mod.id = "mace-glitch-fix"
 mod.name = "Mace Glitch Fix"
 mod.group = "me.deac"
-mod.version = "1.2"
+mod.version = "1.3"
 
 deps.fabric_loader = "0.20.1"
 loomx.loom_version = "1.19-SNAPSHOT"

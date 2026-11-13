@@ -24,17 +24,4 @@ public class AttackMixin {
 
         if (MaceGlitchFix.shouldCancelAttack(attacker, target)) ci.cancel();
     }
-
-    /*@Unique
-    private static boolean shouldCancelAttack(ServerPlayer attacker) {
-        if (!attacker.getMainHandItem().is(Items.MACE)) return false;
-        ModConfig config = ModConfig.get();
-
-        ServerLevel world = (ServerLevel) attacker.level();
-
-        BlockPos posBelow = attacker.blockPosition().below(config.ySubtraction);
-        boolean isBlockBelow = !world.getBlockState(posBelow).isAir();
-
-        return isBlockBelow && attacker.fallDistance > config.minFallDist;
-    }*/
 }

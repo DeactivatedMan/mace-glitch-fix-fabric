@@ -32,16 +32,6 @@ public class MaceGlitchFix implements ModInitializer {
         if (!config.cancelFall && config.groundAttack) LOGGER.warn("doGroundAttack enabled but requires cancelFallDmg, will be force enabled.");
     }
 
-    /**
-     * Adapts to the {@link Identifier} changes introduced in 1.21.
-     */
-    public static Identifier id(String namespace, String path) {
-        //? if <1.21 {
-        /*return new Identifier(namespace, path);
-         *///?} else
-        return Identifier.fromNamespaceAndPath(namespace, path);
-    }
-
     public static boolean shouldCancelAttack(ServerPlayer attacker, Entity target) {
         if (!attacker.getMainHandItem().is(Items.MACE)) return false;
         ModConfig config = ModConfig.get();
