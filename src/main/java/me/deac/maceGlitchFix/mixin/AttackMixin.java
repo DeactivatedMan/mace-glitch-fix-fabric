@@ -22,6 +22,6 @@ public class AttackMixin {
 
         // Check if this player instance is actually a ServerPlayer safely
         if (!(player instanceof ServerPlayer attacker)) return;
-        if (MaceGlitchFix.shouldCancelAttack(attacker, target)) ci.cancel();
+        if (MaceGlitchFix.shouldCancelAttack(attacker)) ci.cancel();
     }
 }
