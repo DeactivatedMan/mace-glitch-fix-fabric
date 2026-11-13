@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Tries to prevent the mace ghost block glitch",
+  "authors": [
+    "DeactivatedMan"
+  ],
+  "contact": {
+    "homepage": "https://buymeacoffee.com/deactivatedman",
+    "sources": "https://codeberg.org/stonecutter/template-fabric"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/template/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.deac.maceGlitchFix.MaceGlitchFix"
+    ]
+  },
+  "mixins": [
+    "template.mixins.json"
+  ],
+  "accessWidener": "template.ct",
+  "depends": {
+    "fabricloader": ">=${loader}",
+    "minecraft": "${minecraft}"
+  }
+}
