@@ -2,6 +2,8 @@ package me.deac.maceGlitchFix;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,5 +33,9 @@ public class MaceGlitchFix implements ModInitializer {
         /*return new Identifier(namespace, path);
          *///?} else
         return Identifier.fromNamespaceAndPath(namespace, path);
+    }
+
+    public static boolean shouldCancelAttack(ServerPlayer attacker, Entity target) {
+        return true;
     }
 }

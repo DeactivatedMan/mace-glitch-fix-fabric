@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "com.example.mixin",
+  "package": "me.deac.maceGlitchFix.mixin",
   "compatibilityLevel": "${java}",
   "mixins": [
-    "ExampleMixin"
+    "AttackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

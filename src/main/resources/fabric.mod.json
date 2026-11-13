@@ -9,20 +9,20 @@
   ],
   "contact": {
     "homepage": "https://buymeacoffee.com/deactivatedman",
-    "sources": "https://codeberg.org/stonecutter/template-fabric"
+    "sources": "https://github.com/DeactivatedMan/mace-glitch-fix-fabric"
   },
-  "license": "CC0-1.0",
-  "icon": "assets/template/icon.png",
-  "environment": "*",
+  "license": "MIT",
+  "icon": "assets/mace-glitch-fix/icon.png",
+  "environment": "server",
   "entrypoints": {
     "main": [
       "me.deac.maceGlitchFix.MaceGlitchFix"
     ]
   },
   "mixins": [
-    "template.mixins.json"
+    "mace-glitch-fix.mixins.json"
   ],
-  "accessWidener": "template.ct",
+  "accessWidener": "mace-glitch-fix.ct",
   "depends": {
     "fabricloader": ">=${loader}",
     "minecraft": "${minecraft}"
