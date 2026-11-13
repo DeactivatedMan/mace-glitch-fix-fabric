@@ -20,8 +20,21 @@ public class AttackMixin {
     private void maceGlitchFix$onAttack(Entity target, CallbackInfo ci) {
         Player player = (Player) (Object) this;
 
-        // Check if this player instance is actually a ServerPlayer safely
         if (!(player instanceof ServerPlayer attacker)) return;
-        if (MaceGlitchFix.shouldCancelAttack(attacker)) ci.cancel();
+
+        if (MaceGlitchFix.shouldCancelAttack(attacker, target)) ci.cancel();
     }
+
+    /*@Unique
+    private static boolean shouldCancelAttack(ServerPlayer attacker) {
+        if (!attacker.getMainHandItem().is(Items.MACE)) return false;
+        ModConfig config = ModConfig.get();
+
+        ServerLevel world = (ServerLevel) attacker.level();
+
+        BlockPos posBelow = attacker.blockPosition().below(config.ySubtraction);
+        boolean isBlockBelow = !world.getBlockState(posBelow).isAir();
+
+        return isBlockBelow && attacker.fallDistance > config.minFallDist;
+    }*/
 }

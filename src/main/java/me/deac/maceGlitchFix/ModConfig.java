@@ -13,12 +13,11 @@ public class ModConfig {
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "maceglitchfix.json");
     private static ModConfig INSTANCE = new ModConfig();
 
-    public long minFallDist = 5L;
-    public long ySubtraction = 1L;
+    public double minFallDist = 5;
+    public int ySubtraction = 1;
     public boolean cancelFall = false;
     public boolean groundAttack = false;
     public boolean logCancels = true;
-    public boolean developerMode = false;
 
     public static ModConfig get() {return INSTANCE;}
     public static void load() {

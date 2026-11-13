@@ -2,11 +2,13 @@ package me.deac.maceGlitchFix;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,37 +20,16 @@ public class MaceGlitchFix implements ModInitializer {
     public static final String VERSION = /*$ mod_version*/ "0.1.0";
     public static final String MINECRAFT = /*$ minecraft*/ "26.2";
 
-    public long ySubtraction;
-    public long minFallDist;
-
-    public boolean logCancels;
-
-    public boolean cancelFall;
-    public boolean groundAttack;
-
-
     @Override
     public void onInitialize() {
         ModConfig.load();
-
-        ySubtraction = ModConfig.get().ySubtraction;
-        minFallDist = ModConfig.get().minFallDist;
-
-        logCancels = ModConfig.get().logCancels;
-
-        cancelFall = ModConfig.get().cancelFall;
-        groundAttack = ModConfig.get().groundAttack;
-
-        boolean devMode = ModConfig.get().developerMode;
+        ModConfig config = ModConfig.get();
 
         LOGGER.info(
-            "Started with config:\n - ySubtraction: {}\n - minFallDist: {}\n - cancel fall: {}\n - do ground attack: {}\n - logCancels: {}\n - dev mode: {}",
-            ySubtraction, minFallDist, cancelFall, groundAttack, logCancels, devMode
+            "Started with config:\n - ySubtraction: {}\n - minFallDist: {}\n - cancel fall: {}\n - do ground attack: {}\n - logCancels: {}",
+            config.ySubtraction, config.minFallDist, config.cancelFall, config.groundAttack, config.logCancels
         );
-        if (!cancelFall && groundAttack) LOGGER.warn("do-ground-attack enabled but requires cancel-fall-dmg to be enabled to function.");
-
-        //? if !release
-        LOGGER.info("Hello Fabric world!");
+        if (!config.cancelFall && config.groundAttack) LOGGER.warn("do-ground-attack enabled but requires cancel-fall-dmg to be enabled to function.");
     }
 
     /**
@@ -61,7 +42,7 @@ public class MaceGlitchFix implements ModInitializer {
         return Identifier.fromNamespaceAndPath(namespace, path);
     }
 
-    public static boolean shouldCancelAttack(ServerPlayer attacker) {
+    /*public static boolean shouldCancelAttack(ServerPlayer attacker) {
         if (!attacker.getMainHandItem().is(Items.MACE)) return false; // Not a mace
 
         try (ServerLevel world = attacker.level()) {
@@ -71,6 +52,34 @@ public class MaceGlitchFix implements ModInitializer {
             // If the block below isn't air AND ffell from above the minimum
             // Minimum check is to allow for use of mace without falling (ie on ground or just critting)
             return isBlockBelow && attacker.fallDistance > 5;
-        } catch (Exception _) {return false;}
+        } catch (Exception e) {return false;}
+    }*/
+
+    public static boolean shouldCancelAttack(ServerPlayer attacker, Entity target) {
+        if (!attacker.getMainHandItem().is(Items.MACE)) return false;
+        ModConfig config = ModConfig.get();
+
+        ServerLevel world = (ServerLevel) attacker.level();
+
+        BlockPos posBelow = attacker.blockPosition().below(config.ySubtraction);
+        BlockState state = world.getBlockState(posBelow);
+        boolean isBlockBelow = !state.isAir();
+        boolean shouldCancel = isBlockBelow && attacker.fallDistance > config.minFallDist;
+
+        if (shouldCancel) {
+            if (config.logCancels) LOGGER.info(
+                    "Cancelled attack by {} (uuid {}) falling from {} / {} blocks",
+                    attacker.getName().getString(), attacker.getStringUUID(), attacker.fallDistance, config.minFallDist
+            );
+
+            if (config.cancelFall || config.groundAttack) attacker.fallDistance = 0;
+
+            ClientboundBlockUpdatePacket packet = new ClientboundBlockUpdatePacket(posBelow, state);
+            attacker.connection.send(packet);
+
+            if (config.groundAttack) attacker.attack(target);
+        }
+
+        return shouldCancel;
     }
 }
