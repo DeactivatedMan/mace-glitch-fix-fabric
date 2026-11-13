@@ -26,10 +26,10 @@ public class MaceGlitchFix implements ModInitializer {
         ModConfig config = ModConfig.get();
 
         LOGGER.info(
-            "Started with config:\n - ySubtraction: {}\n - minFallDist: {}\n - cancel fall: {}\n - do ground attack: {}\n - logCancels: {}",
+            "Started with config:\n - ySubtraction: {}\n - minFallDist: {}\n - cancelFall: {}\n - doGroundAttack: {}\n - logCancels: {}",
             config.ySubtraction, config.minFallDist, config.cancelFall, config.groundAttack, config.logCancels
         );
-        if (!config.cancelFall && config.groundAttack) LOGGER.warn("do-ground-attack enabled but requires cancel-fall-dmg to be enabled to function.");
+        if (!config.cancelFall && config.groundAttack) LOGGER.warn("doGroundAttack enabled but requires cancelFallDmg, will be force enabled.");
     }
 
     /**
@@ -41,19 +41,6 @@ public class MaceGlitchFix implements ModInitializer {
          *///?} else
         return Identifier.fromNamespaceAndPath(namespace, path);
     }
-
-    /*public static boolean shouldCancelAttack(ServerPlayer attacker) {
-        if (!attacker.getMainHandItem().is(Items.MACE)) return false; // Not a mace
-
-        try (ServerLevel world = attacker.level()) {
-            BlockPos posBelow = attacker.blockPosition().below(1);
-            boolean isBlockBelow = !world.getBlockState(posBelow).isAir();
-
-            // If the block below isn't air AND ffell from above the minimum
-            // Minimum check is to allow for use of mace without falling (ie on ground or just critting)
-            return isBlockBelow && attacker.fallDistance > 5;
-        } catch (Exception e) {return false;}
-    }*/
 
     public static boolean shouldCancelAttack(ServerPlayer attacker, Entity target) {
         if (!attacker.getMainHandItem().is(Items.MACE)) return false;
