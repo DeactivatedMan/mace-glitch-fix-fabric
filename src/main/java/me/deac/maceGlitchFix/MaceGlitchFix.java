@@ -13,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MaceGlitchFix implements ModInitializer {
-    // This logger is used to write text to the console and the log file.
-    // It is considered best practice to use your mod id as the logger's name.
-    // That way, it's clear which mod wrote info, warnings, and errors.
     public static final Logger LOGGER = LoggerFactory.getLogger("template");
     public static final String VERSION = /*$ mod_version*/ "0.1.0";
     public static final String MINECRAFT = /*$ minecraft*/ "26.2";
@@ -40,23 +37,25 @@ public class MaceGlitchFix implements ModInitializer {
 
         BlockPos posBelow = attacker.blockPosition().below(config.ySubtraction);
         BlockState state = world.getBlockState(posBelow);
-        boolean isBlockBelow = !state.isAir();
-        boolean shouldCancel = isBlockBelow && attacker.fallDistance > config.minFallDist;
+        //boolean isBlockBelow = !state.isAir();
+        //boolean shouldCancel = isBlockBelow && attacker.fallDistance > config.minFallDist;
 
-        if (shouldCancel) {
-            if (config.logCancels) LOGGER.info(
-                    "Cancelled attack by {} (uuid {}) falling from {} / {} blocks",
-                    attacker.getName().getString(), attacker.getStringUUID(), attacker.fallDistance, config.minFallDist
-            );
+        // Cleaner nesting + memory usage for next version
+        if (state.isAir() && attacker.fallDistance < config.minFallDist) return false;
 
-            if (config.cancelFall || config.groundAttack) attacker.fallDistance = 0;
+        if (config.logCancels) LOGGER.info(
+                "Cancelled attack by {} (uuid {}) falling from {} / {} blocks",
+                attacker.getName().getString(), attacker.getStringUUID(), attacker.fallDistance, config.minFallDist
+        );
 
-            ClientboundBlockUpdatePacket packet = new ClientboundBlockUpdatePacket(posBelow, state);
-            attacker.connection.send(packet);
+        if (config.cancelFall || config.groundAttack) attacker.fallDistance = 0;
 
-            if (config.groundAttack) attacker.attack(target);
-        }
+        ClientboundBlockUpdatePacket packet = new ClientboundBlockUpdatePacket(posBelow, state);
+        attacker.connection.send(packet);
 
-        return shouldCancel;
+        if (config.groundAttack) attacker.attack(target);
+
+
+        return true;
     }
 }
