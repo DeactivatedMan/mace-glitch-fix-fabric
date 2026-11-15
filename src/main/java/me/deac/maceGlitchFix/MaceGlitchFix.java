@@ -41,7 +41,7 @@ public class MaceGlitchFix implements ModInitializer {
         //boolean shouldCancel = isBlockBelow && attacker.fallDistance > config.minFallDist;
 
         // Cleaner nesting + memory usage for next version
-        if (state.isAir() && attacker.fallDistance < config.minFallDist) return false;
+        if (state.isAir() || attacker.fallDistance < config.minFallDist) return false;
 
         if (config.logCancels) LOGGER.info(
                 "Cancelled attack by {} (uuid {}) falling from {} / {} blocks",
